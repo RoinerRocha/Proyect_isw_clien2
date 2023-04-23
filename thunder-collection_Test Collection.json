@@ -1,0 +1,226 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Test Collection",
+    "dateExported": "2023-03-23T01:28:08.531Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "c80db159-e61f-4d3b-b86a-821427a01501",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "post user",
+            "url": "localhost:5000/user",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-03-23T00:27:16.124Z",
+            "modified": "2023-03-23T00:33:05.735Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"fname\": \"test\",\n  \"lname\": \"test\",\n  \"email\": \"test@gmail.com\",\n  \"password\": \"test\",\n  \"role\": \"user\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "18cfb0ec-d18c-4db6-9ed6-79257a6b3eb5",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "authentication",
+            "url": "localhost:5000/session",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-03-23T00:36:10.452Z",
+            "modified": "2023-03-23T00:37:30.367Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"test@gmail.com\",\n  \"password\": \"test\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "554b37f5-430d-4a29-8bff-71cc9a6a840a",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "post category",
+            "url": "localhost:5000/category",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-03-23T00:38:02.538Z",
+            "modified": "2023-03-23T00:41:34.425Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"test\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "41f437c2-daa6-4eeb-8368-6870ed0828aa",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "put category",
+            "url": "localhost:5000/category/641ba03e5401408ee7da3ace",
+            "method": "PUT",
+            "sortNum": 40000,
+            "created": "2023-03-23T00:41:57.880Z",
+            "modified": "2023-03-23T00:44:22.055Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"testo\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "4d285ee0-e0d8-4f74-9e0f-5f808218923d",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "get category",
+            "url": "localhost:5000/category/641ba03e5401408ee7da3ace",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2023-03-23T00:44:52.927Z",
+            "modified": "2023-03-23T00:45:53.184Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "7b2869af-afa4-4bdd-bc8a-c402982a5478",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "delete category",
+            "url": "localhost:5000/category/641ba03e5401408ee7da3ace",
+            "method": "DELETE",
+            "sortNum": 60000,
+            "created": "2023-03-23T00:46:10.654Z",
+            "modified": "2023-03-23T00:48:55.581Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "172ca4e5-4b29-4c4e-a360-5f771894b5e7",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "post newsource",
+            "url": "localhost:5000/newsource",
+            "method": "POST",
+            "sortNum": 70000,
+            "created": "2023-03-23T00:49:18.683Z",
+            "modified": "2023-03-23T01:00:59.603Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"url\": \"https://feeds.feedburner.com/crhoy/wSjk\",\n  \"name\": \"test\",\n  \"user_id\": \"641217678ecc6d7ee84892a3\",\n  \"category_id\": \"6413f76637709002bbb514c3\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "a39cb387-92f8-4036-8f7a-e3ed4f479c9a",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "put news source",
+            "url": "localhost:5000/newsource/641ba4b95401408ee7da3ad4",
+            "method": "PUT",
+            "sortNum": 80000,
+            "created": "2023-03-23T01:01:38.589Z",
+            "modified": "2023-03-23T01:10:47.330Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"url\": \"https://feeds.feedburner.com/crhoy/wSjk\",\n  \"name\": \"testoo\",\n  \"user_id\": \"641217678ecc6d7ee84892a3\",\n  \"category_id\": \"6413f76637709002bbb514c3\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "96206ec0-f894-448c-9eed-3c234a6f978a",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "get news source",
+            "url": "localhost:5000/newsource",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2023-03-23T01:11:36.295Z",
+            "modified": "2023-03-23T01:17:47.336Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "e01e8c5c-28c4-4ed9-8788-26d823948b30",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "delete news source",
+            "url": "localhost:5000/newsource/641ba4b95401408ee7da3ad4",
+            "method": "DELETE",
+            "sortNum": 100000,
+            "created": "2023-03-23T01:18:28.698Z",
+            "modified": "2023-03-23T01:19:36.923Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "663ee4bd-4ac0-4f17-9a76-ab762204b853",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "put news",
+            "url": "localhost:5000/newsource/641217678ecc6d7ee84892a3/process",
+            "method": "POST",
+            "sortNum": 110000,
+            "created": "2023-03-23T01:23:21.235Z",
+            "modified": "2023-03-23T01:23:21.235Z",
+            "headers": [
+                {
+                    "name": "authorization",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWQiOiI2NDE5ZTk3MmJkN2RjNzkwNDQzOGU1OTciLCJpYXQiOjE2Nzk0NjczMDd9.iUMp3Zp4EKS8VWBtL9NKt1qQEj5h89qlCQMBMptQPrY"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "29d1ef74-e456-423e-b336-3b04e4723660",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "get news",
+            "url": "localhost:5000/news/641217678ecc6d7ee84892a3",
+            "method": "GET",
+            "sortNum": 120000,
+            "created": "2023-03-23T01:24:14.893Z",
+            "modified": "2023-03-23T01:25:40.274Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "ab5bec12-492a-429e-80ff-ab3a935a3a66",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "get news by category",
+            "url": "localhost:5000/news/641217678ecc6d7ee84892a3/6415ee65d9c6e77d934affa2",
+            "method": "GET",
+            "sortNum": 130000,
+            "created": "2023-03-23T01:26:00.330Z",
+            "modified": "2023-03-23T01:27:35.148Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        }
+    ]
+}

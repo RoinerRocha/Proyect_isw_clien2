@@ -10,6 +10,7 @@ const News = require("./models/news");
 const Person = require("./models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 const JWT_SECRET = "Qwertyuiopasdfghjkl()ñzxcvbnm[]qwsasdñlkmsdlsñldfkl";
 
@@ -27,25 +28,6 @@ app.use(cors({
   methods: "*"
 }));
 
-//authorization
-/*app.use(function (req, res, next) {
-  if (req.headers["authorization"]) {
-    const token = req.headers['authorization'];
-    jwt.verify(token, JWT_SECRET, (err) => {
-      if(err){
-        res.send('Access denied');
-      }else{
-        next();
-      }
-    });
-  }else {
-    res.status(401);
-    res.send({
-      error: "Unauthorized "
-    });
-  }
-});*/
-
 //register user
 app.post('/user', async (req, res) => {
   const User = mongoose.model("users");
@@ -55,13 +37,12 @@ app.post('/user', async (req, res) => {
 
   person.fname = req.body.fname;
   person.lname = req.body.lname;
-  person.phone = req.body.phone;
   person.email = req.body.email;
   person.password = encryptedPassword;
   person.role = req.body.role
 
   if (person.fname && person.email) {
-    const oldUser = await User.findOne({email: emailSearch});
+    const oldUser = await User.findOne({ email: emailSearch });
     if (oldUser) {
       console.log(emailSearch);
       res.status(409);
@@ -73,12 +54,40 @@ app.post('/user', async (req, res) => {
         res.json({
           error: 'There was an error saving the user'
         });
+      } else {
+        const transporter = nodemailer.createTransport({
+          name: "smtp.ethereal.email",
+          host: "smtp.ethereal.email",
+          port: 587,
+          secure: false,    
+          auth: {
+            user: "mikayla.abshire58@ethereal.email",
+            pass: "yBgZfAPTBeHQ5vfvnP"
+          }
+        });
+
+        const mailOptions = {
+          from: '"News Cover Team" <NewsCover@example.com>',
+          to: person.email,
+          subject: "Confirm your email address",
+          html: `<p>Please click <a href="http://localhost:5000/user/confirm-email/${person._id}">here</a> to confirm your email address.</p>`
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+            console.log(person.email);
+            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+          }
+        });
+        res.status(201);
+        res.header({
+          'location': `http://localhost:5000/user/?id=${person.id}`
+        });
+        res.json(person);
       }
-      res.status(201);
-      res.header({
-        'location': `http://localhost:5000/user/?id=${person.id}`
-      });
-      res.json(person);
     });
   } else {
     res.status(422);
@@ -87,6 +96,20 @@ app.post('/user', async (req, res) => {
       error: 'No valid data provided for user'
     });
   }
+});
+
+//Confirm user account
+app.get('/user/confirm-email/:id', async (req, res) => {
+  const User = mongoose.model("users");
+  const person = await User.findOne({_id: req.params.id});
+  if (!person) {
+    res.status(404);
+    return res.json({ error: "User not found" });
+  }
+  person.confirmed = true;
+  await person.save();
+  res.status(200);
+  res.json({ message: "Email confirmed!!"})
 });
 
 //authenticate user.
@@ -98,9 +121,12 @@ app.post("/session", async (req, res) => {
   if (!user) {
     return res.json({ error: "User Not Found" });
   }
+  if (user.confirmed == false) {
+    return res.json({ error: "You need to confirm your account first" });
+  }
   if (await bcrypt.compare(password, user.password)) {
     console.log("ssss");
-    const Token = jwt.sign({ fname: user.fname, lname: user.lname, phone: user.phone, email: user.email, role: user.role,id: user.id }, JWT_SECRET);
+    const Token = jwt.sign({ email: user.email, role: user.role, id: user.id }, JWT_SECRET);
 
     if (res.status(200)) {
       return res.json({ status: "ok", data: Token });
@@ -114,13 +140,13 @@ app.post("/session", async (req, res) => {
 app.get('/checktoken', async (req, res) => {
   const token = req.body.token;
 
-  try{
+  try {
     const data = jwt.decode(token)
     res.json(data);
 
-  }catch (error){
+  } catch (error) {
     res.status(422)
-    res.json({error: "There was an error"})
+    res.json({ error: "There was an error" })
   }
 });
 
@@ -132,7 +158,7 @@ app.post('/category', async (req, res) => {
   category.name = req.body.name;
 
   if (category.name) {
-    const check = await cat.findOne({name:req.body.name});
+    const check = await cat.findOne({ name: req.body.name });
     if (check) {
       res.status(409);
       return res.json({ error: "Category already exist" });
@@ -161,14 +187,14 @@ app.post('/category', async (req, res) => {
 //delete category by id
 app.delete('/category/:id', (req, res) => {
   const Category = mongoose.model("categories");
-  const {id} = req.params;
+  const { id } = req.params;
 
   Category.findByIdAndDelete(id, function (err, docs) {
-    if (err){
-        res.status(404);
-        res.json({error: 'Data not found'});
+    if (err) {
+      res.status(404);
+      res.json({ error: 'Data not found' });
     }
-    else{
+    else {
       res.status(200);
       res.json();
     }
@@ -178,17 +204,17 @@ app.delete('/category/:id', (req, res) => {
 //update categories
 app.put('/category/:id', (req, res) => {
   const Category = mongoose.model("categories");
-  const {id} = req.params;
+  const { id } = req.params;
   const name = req.body.name;
 
-  Category.findByIdAndUpdate(id,{name: name},  function (err, docs) {
-    if (err){
-        res.status(404);
-        res.json({error: 'Data not found'});
+  Category.findByIdAndUpdate(id, { name: name }, function (err, docs) {
+    if (err) {
+      res.status(404);
+      res.json({ error: 'Data not found' });
     }
-    else{
+    else {
       res.status(200);
-      res.header({'location': `http://localhost:5000/category/?id=${docs.id}`});
+      res.header({ 'location': `http://localhost:5000/category/?id=${docs.id}` });
       res.json(docs);
     }
   })
@@ -197,15 +223,15 @@ app.put('/category/:id', (req, res) => {
 //get category by id
 app.get('/category/:id', async (req, res) => {
   const Category = mongoose.model("categories");
-  const {id} = req.params;
+  const { id } = req.params;
 
-  try{
+  try {
     const cat = await Category.findById(id)
     res.json(cat);
 
-  }catch (error){
+  } catch (error) {
     res.status(422)
-    res.json({error: "There was an error"})
+    res.json({ error: "There was an error" })
   }
 });
 
@@ -213,13 +239,13 @@ app.get('/category/:id', async (req, res) => {
 app.get('/category', async (req, res) => {
   const Category = mongoose.model("categories");
 
-  try{
+  try {
     const cat = await Category.find();
     res.json(cat);
 
-  }catch (error){
+  } catch (error) {
     res.status(422)
-    res.json({error: "There was an error"})
+    res.json({ error: "There was an error" })
   }
 });
 
@@ -235,8 +261,8 @@ app.post('/newsource', async (req, res) => {
   source.category_id = req.body.category_id;
 
   if (source.user_id && source.category_id) {
-    const check = await User.findOne({_id: req.body.user_id});
-    const check2 = await Category.findOne({_id: req.body.category_id});
+    const check = await User.findOne({ _id: req.body.user_id });
+    const check2 = await Category.findOne({ _id: req.body.category_id });
 
     if (!check || !check2) {
       res.status(409);
@@ -266,14 +292,14 @@ app.post('/newsource', async (req, res) => {
 //delete source by id
 app.delete('/newsource/:id', (req, res) => {
   const NewSource = mongoose.model("newSources");
-  const {id} = req.params;
+  const { id } = req.params;
 
   NewSource.findByIdAndDelete(id, function (err, docs) {
-    if (err){
-        res.status(404);
-        res.json({error: 'Data not found'});
+    if (err) {
+      res.status(404);
+      res.json({ error: 'Data not found' });
     }
-    else{
+    else {
       res.status(200);
       res.json();
     }
@@ -283,20 +309,20 @@ app.delete('/newsource/:id', (req, res) => {
 //update new sources
 app.put('/newsource/:id', (req, res) => {
   const NewSource = mongoose.model("newSources");
-  const {id} = req.params;
+  const { id } = req.params;
   const url = req.body.url;
   const name = req.body.name;
   const user_id = req.body.user_id;
   const category_id = req.body.category_id;
 
-  NewSource.findByIdAndUpdate(id,{url: url, name: name, user_id: user_id, category_id: category_id}, function (err, docs) {
-    if (err){
-        res.status(404);
-        res.json({error: 'Data not found'});
+  NewSource.findByIdAndUpdate(id, { url: url, name: name, user_id: user_id, category_id: category_id }, function (err, docs) {
+    if (err) {
+      res.status(404);
+      res.json({ error: 'Data not found' });
     }
-    else{
+    else {
       res.status(200);
-      res.header({'location': `http://localhost:5000/category/?id=${docs.id}`});
+      res.header({ 'location': `http://localhost:5000/category/?id=${docs.id}` });
       res.json(docs);
     }
   })
@@ -305,16 +331,16 @@ app.put('/newsource/:id', (req, res) => {
 //get news source by id
 app.get('/newsource/:id', async (req, res) => {
   const NewSource = mongoose.model("newSources");
-  const {id} = req.params;
+  const { id } = req.params;
 
-  try{
-    const source = await NewSource.find({user_id: id})
+  try {
+    const source = await NewSource.find({ user_id: id })
     res.status(200)
     res.json(source);
 
-  }catch (error){
+  } catch (error) {
     res.status(422)
-    res.json({error: "There was an error"})
+    res.json({ error: "There was an error" })
   }
 });
 
@@ -322,14 +348,14 @@ app.get('/newsource/:id', async (req, res) => {
 app.get('/newsource', async (req, res) => {
   const NewSource = mongoose.model("newSources");
 
-  try{
+  try {
     const source = await NewSource.find()
     res.status(200)
     res.json(source);
 
-  }catch (error){
+  } catch (error) {
     res.status(422)
-    res.json({error: "There was an error"})
+    res.json({ error: "There was an error" })
   }
 });
 
@@ -338,52 +364,52 @@ app.post('/newsource/:id/process', async (req, res) => {
   //RSS Parser
   const parser = new Parser();
   const NewSource = mongoose.model("newSources");
-  const {id} = req.params;
+  const { id } = req.params;
 
   // Get all the items in the RSS feed
-  const source = await NewSource.find({user_id: id});
+  const source = await NewSource.find({ user_id: id });
   console.log(source);
   const out = [];
-  
-  if(source){
+
+  if (source) {
     source.forEach(async elementN => {
       const feed = await parser.parseURL(elementN.url);
       feed.items.forEach(async element => {
         const news = new News.model();
         news.title = element.title,
-        news.short_description = element.contentSnippet,
-        news.permalink = element.link,
-        news.date = element.isoDate,
-        news.news_sources_id = elementN.id,
-        news.user_id = elementN.user_id,
-        news.category_id = elementN.category_id
-    
+          news.short_description = element.contentSnippet,
+          news.permalink = element.link,
+          news.date = element.isoDate,
+          news.news_sources_id = elementN.id,
+          news.user_id = elementN.user_id,
+          news.category_id = elementN.category_id
+
         await news.save();
         await out.push(element);
         console.log(element);
       });
     });
-  }else{
+  } else {
     res.status(404);
     res.json("Not found");
   }
   res.status(201)
-  res.json({out});
+  res.json({ out });
 });
 
 //get all news by user id
 app.get('/news/:id', async (req, res) => {
   const News = mongoose.model("news");
-  const {id} = req.params;
+  const { id } = req.params;
 
-  try{
-    const news = await News.find({user_id: id});
+  try {
+    const news = await News.find({ user_id: id });
     res.status(200)
     res.json(news);
 
-  }catch (error){
+  } catch (error) {
     res.status(422)
-    res.json({error: "There was an error"})
+    res.json({ error: "There was an error" })
   }
 });
 
@@ -393,14 +419,14 @@ app.get('/news/:id/:cat', async (req, res) => {
   const id = req.params.id;
   const cat = req.params.cat;
 
-  try{
-    const news = await News.find({user_id: id, category_id: cat});
+  try {
+    const news = await News.find({ user_id: id, category_id: cat });
     res.status(200)
     res.json(news);
 
-  }catch (error){
+  } catch (error) {
     res.status(422)
-    res.json({error: "There was an error"})
+    res.json({ error: "There was an error" })
   }
 });
 
