@@ -56,13 +56,13 @@ app.post('/user', async (req, res) => {
         });
       } else {
         const transporter = nodemailer.createTransport({
-          name: "smtp.ethereal.email",
-          host: "smtp.ethereal.email",
+          name: "smtp.gmail.com",
+          host: "smtp.gmail.com",
           port: 587,
           secure: false,    
           auth: {
-            user: "mikayla.abshire58@ethereal.email",
-            pass: "yBgZfAPTBeHQ5vfvnP"
+            user: "fakechicharo22@gmail.com",
+            pass: "mcjzudxaxbpgiwdz"
           }
         });
 
