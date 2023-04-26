@@ -37,6 +37,7 @@ app.post('/user', async (req, res) => {
 
   person.fname = req.body.fname;
   person.lname = req.body.lname;
+  person.phone = req.body.phone;
   person.email = req.body.email;
   person.password = encryptedPassword;
   person.role = req.body.role
@@ -126,7 +127,7 @@ app.post("/session", async (req, res) => {
   }
   if (await bcrypt.compare(password, user.password)) {
     console.log("ssss");
-    const Token = jwt.sign({ email: user.email, role: user.role, id: user.id }, JWT_SECRET);
+    const Token = jwt.sign({ phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
 
     if (res.status(200)) {
       return res.json({ status: "ok", data: Token });
