@@ -60,7 +60,7 @@ app.post('/user', async (req, res) => {
           name: "smtp.gmail.com",
           host: "smtp.gmail.com",
           port: 587,
-          secure: false,    
+          secure: false,
           auth: {
             user: "fakechicharo22@gmail.com",
             pass: "mcjzudxaxbpgiwdz"
@@ -102,7 +102,7 @@ app.post('/user', async (req, res) => {
 //Confirm user account
 app.get('/user/confirm-email/:id', async (req, res) => {
   const User = mongoose.model("users");
-  const person = await User.findOne({_id: req.params.id});
+  const person = await User.findOne({ _id: req.params.id });
   if (!person) {
     res.status(404);
     return res.json({ error: "User not found" });
@@ -110,7 +110,7 @@ app.get('/user/confirm-email/:id', async (req, res) => {
   person.confirmed = true;
   await person.save();
   res.status(200);
-  res.json({ message: "Email confirmed!!"})
+  res.json({ message: "Email confirmed!!" })
 });
 
 //authenticate user.
@@ -147,14 +147,14 @@ app.post("/passwordless", async (req, res) => {
   }
   if (user.confirmed == false) {
     return res.json({ error: "You need to confirm your account first" });
-  }else{
+  } else {
     const token = jwt.sign({ email: user.email }, JWT_SECRET);
 
     const transporter = nodemailer.createTransport({
       name: "smtp.gmail.com",
       host: "smtp.gmail.com",
       port: 587,
-      secure: false,    
+      secure: false,
       auth: {
         user: "fakechicharo22@gmail.com",
         pass: "mcjzudxaxbpgiwdz"
@@ -178,7 +178,7 @@ app.post("/passwordless", async (req, res) => {
     })
 
     if (res.status(200)) {
-      return res.json({ status: "ok"});
+      return res.json({ status: "ok" });
     } else {
       return res.json({ status: "Error" });
     }
@@ -187,7 +187,7 @@ app.post("/passwordless", async (req, res) => {
 
 //authentication passwordless
 app.post("/session/:token", async (req, res) => {
-  const {token} = req.params
+  const { token } = req.params
   const data = jwt.decode(token)
 
   const email = data['email'];
@@ -195,10 +195,59 @@ app.post("/session/:token", async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     return res.json({ error: "User Not Found" });
+  } else {
+    const Token = jwt.sign({ phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
+
+    if (res.status(200)) {
+      return res.json({ status: "ok", data: Token });
+    } else {
+      return res.json({ status: "Error" });
+    }
+  }
+});
+
+//send message 2FA
+app.post("/2FA", async (req, res) => {
+  const accountSid = 'AC31004f7ee25601629ecd91e68118676b';
+  const authToken = 'ff9e3020b464aeb8bcab7d9897cb9ca4';
+  const client = require('twilio')(accountSid, authToken);
+  let code = Math.floor(Math.random() * (1111 - 9999) + 9999).toString();
+
+  const { email, password } = req.body;
+  const user = await User.findOneAndUpdate({ email }, { verification: code }, {
+    new: true
+  });
+  if (!user) {
+    return res.json({ error: "User Not Found" });
   }
   if (user.confirmed == false) {
     return res.json({ error: "You need to confirm your account first" });
-  }else{
+  }
+  if (await bcrypt.compare(password, user.password)) {
+    //const Token = jwt.sign({ phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
+    client.messages
+      .create({
+        body: 'Este es tu código de acceso ' + code,
+        from: '+16204078287',
+        to: user.phone
+      })
+    if (res.status(200)) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({ status: "Error" });
+    }
+  }
+  res.json({ status: "error", error: "Invalid password" });
+});
+
+//Authentication 2FA
+app.post("/session2fa/:code", async (req, res) => {
+  const { code } = req.params
+
+  const user = await User.findOne({ code });
+  if (!user) {
+    return res.json({ error: "User Not Found" });
+  } else {
     const Token = jwt.sign({ phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
 
     if (res.status(200)) {
