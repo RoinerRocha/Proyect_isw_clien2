@@ -126,7 +126,6 @@ app.post("/session", async (req, res) => {
     return res.json({ error: "You need to confirm your account first" });
   }
   if (await bcrypt.compare(password, user.password)) {
-    console.log("ssss");
     const Token = jwt.sign({ phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
 
     if (res.status(200)) {
@@ -136,6 +135,78 @@ app.post("/session", async (req, res) => {
     }
   }
   res.json({ status: "error", error: "Invalid password" });
+});
+
+//send mail in login passwordless
+app.post("/passwordless", async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.json({ error: "User Not Found" });
+  }
+  if (user.confirmed == false) {
+    return res.json({ error: "You need to confirm your account first" });
+  }else{
+    const token = jwt.sign({ email: user.email }, JWT_SECRET);
+
+    const transporter = nodemailer.createTransport({
+      name: "smtp.gmail.com",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,    
+      auth: {
+        user: "fakechicharo22@gmail.com",
+        pass: "mcjzudxaxbpgiwdz"
+      }
+    });
+
+    const mailOptions = {
+      from: '"News Cover Team" <NewsCover@example.com>',
+      to: email,
+      subject: "Passwordless access",
+      html: `<p>Please click <a href="http://localhost:5000/session/${token}">here</a> to login into your account.</p>`
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+        console.log(person.email);
+      }
+    })
+
+    if (res.status(200)) {
+      return res.json({ status: "ok"});
+    } else {
+      return res.json({ status: "Error" });
+    }
+  }
+});
+
+//authentication passwordless
+app.post("/session/:token", async (req, res) => {
+  const {token} = req.params
+  const data = jwt.decode(token)
+
+  const email = data['email'];
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.json({ error: "User Not Found" });
+  }
+  if (user.confirmed == false) {
+    return res.json({ error: "You need to confirm your account first" });
+  }else{
+    const Token = jwt.sign({ phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
+
+    if (res.status(200)) {
+      return res.json({ status: "ok", data: Token });
+    } else {
+      return res.json({ status: "Error" });
+    }
+  }
 });
 
 app.get('/checktoken', async (req, res) => {
