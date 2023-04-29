@@ -148,7 +148,7 @@ app.post("/passwordless", async (req, res) => {
   if (user.confirmed == false) {
     return res.json({ error: "You need to confirm your account first" });
   } else {
-    const token = jwt.sign({ email: user.email }, JWT_SECRET);
+    const token = jwt.sign({ phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
 
     const transporter = nodemailer.createTransport({
       name: "smtp.gmail.com",
@@ -209,7 +209,7 @@ app.post("/session/:token", async (req, res) => {
 //send message 2FA
 app.post("/2FA", async (req, res) => {
   const accountSid = 'AC31004f7ee25601629ecd91e68118676b';
-  const authToken = 'ff9e3020b464aeb8bcab7d9897cb9ca4';
+  const authToken = '84fe3f348214814384884ce88daa11e8';
   const client = require('twilio')(accountSid, authToken);
   let code = Math.floor(Math.random() * (1111 - 9999) + 9999).toString();
 
