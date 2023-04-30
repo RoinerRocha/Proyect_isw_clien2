@@ -192,7 +192,7 @@ app.post("/session/:token", async (req, res) => {
 
   const email = data['email'];
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: email });
   if (!user) {
     return res.json({ error: "User Not Found" });
   } else {
