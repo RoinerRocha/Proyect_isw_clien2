@@ -244,11 +244,12 @@ app.post("/2FA", async (req, res) => {
 app.post("/session2fa/:code", async (req, res) => {
   const { code } = req.params
 
-  const user = await User.findOne({ code });
+  const user = await User.findOne({ verification: code });
+  console.log(code);
   if (!user) {
     return res.json({ error: "User Not Found" });
   } else {
-    const Token = jwt.sign({ phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
+    const Token = jwt.sign({fname: user.fname, phone: user.phone, email: user.email, role: user.role, id: user.id }, JWT_SECRET);
 
     if (res.status(200)) {
       return res.json({ status: "ok", data: Token });
