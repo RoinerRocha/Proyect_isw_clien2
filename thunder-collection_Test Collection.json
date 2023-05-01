@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Test Collection",
-    "dateExported": "2023-03-23T01:28:08.531Z",
+    "dateExported": "2023-05-01T01:36:15.452Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -12,14 +12,33 @@
             "name": "post user",
             "url": "localhost:5000/user",
             "method": "POST",
-            "sortNum": 10000,
+            "sortNum": 2500,
             "created": "2023-03-23T00:27:16.124Z",
-            "modified": "2023-03-23T00:33:05.735Z",
+            "modified": "2023-05-01T01:21:25.634Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"fname\": \"test\",\n  \"lname\": \"test\",\n  \"email\": \"test@gmail.com\",\n  \"password\": \"test\",\n  \"role\": \"user\"\n}",
+                "raw": "{\n  \"fname\": \"a\",\n  \"lname\": \"a\",\n  \"phone\": \"50683405057\",\n  \"email\": \"fakechicharo22@gmail.com\",\n  \"password\": \"123\",\n  \"role\": \"admin\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "1ce7d524-3aa9-4671-b2c1-4bf577df6dff",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "2fa send sms",
+            "url": "localhost:5000/2fa",
+            "method": "POST",
+            "sortNum": 5000,
+            "created": "2023-05-01T01:17:37.051Z",
+            "modified": "2023-05-01T01:21:23.110Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"javihl14@gmail.com\",\n  \"password\": \"test\"\n}",
                 "form": []
             },
             "tests": []
@@ -28,38 +47,47 @@
             "_id": "18cfb0ec-d18c-4db6-9ed6-79257a6b3eb5",
             "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
             "containerId": "",
-            "name": "authentication",
-            "url": "localhost:5000/session",
+            "name": "authentication 2fa",
+            "url": "localhost:5000/session2fa/0",
             "method": "POST",
             "sortNum": 20000,
             "created": "2023-03-23T00:36:10.452Z",
-            "modified": "2023-03-23T00:37:30.367Z",
+            "modified": "2023-05-01T01:10:13.168Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "432bb47e-d5de-4834-8a3e-41fbdc303bf2",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "passwordless send mail",
+            "url": "localhost:5000/passwordless",
+            "method": "POST",
+            "sortNum": 35000,
+            "created": "2023-05-01T01:11:02.040Z",
+            "modified": "2023-05-01T01:21:11.914Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"email\": \"test@gmail.com\",\n  \"password\": \"test\"\n}",
+                "raw": "{\n  \"email\": \"javihl14@gmail.com\"\n}",
                 "form": []
             },
             "tests": []
         },
         {
-            "_id": "554b37f5-430d-4a29-8bff-71cc9a6a840a",
+            "_id": "6a655dcf-c2cb-4ae7-83be-95767c66a04e",
             "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
             "containerId": "",
-            "name": "post category",
-            "url": "localhost:5000/category",
+            "name": "authentication passwordless",
+            "url": "localhost:5000/session/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6Iis1MDY4MzQwNTA1NyIsImVtYWlsIjoiamF2aWhsMTRAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpZCI6IjY0NGFiMGI5NDc0OWFkOTI1Y2FmMWFiZCIsImlhdCI6MTY4MjkwMzUyNX0.JsIPRGJKuWSo_g1fjYp1VCN4kcdSksnDGYy4cU2cNBs",
             "method": "POST",
-            "sortNum": 30000,
-            "created": "2023-03-23T00:38:02.538Z",
-            "modified": "2023-03-23T00:41:34.425Z",
+            "sortNum": 37500,
+            "created": "2023-05-01T01:14:59.633Z",
+            "modified": "2023-05-01T01:21:30.966Z",
             "headers": [],
             "params": [],
-            "body": {
-                "type": "json",
-                "raw": "{\n  \"name\": \"test\"\n}",
-                "form": []
-            },
             "tests": []
         },
         {
@@ -77,6 +105,25 @@
             "body": {
                 "type": "json",
                 "raw": "{\n  \"name\": \"testo\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "554b37f5-430d-4a29-8bff-71cc9a6a840a",
+            "colId": "ca54008a-c2a1-4b42-889b-4b1f04b82a23",
+            "containerId": "",
+            "name": "post category",
+            "url": "localhost:5000/category",
+            "method": "POST",
+            "sortNum": 47500,
+            "created": "2023-03-23T00:38:02.538Z",
+            "modified": "2023-05-01T01:21:16.594Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"test\"\n}",
                 "form": []
             },
             "tests": []
